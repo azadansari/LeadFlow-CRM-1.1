@@ -14,7 +14,7 @@ export default function Sidebar() {
   return (
     <aside className="w-64 border-r bg-white h-screen">
       <div className="border-b p-6">
-        <h1 className="text-2xl font-bold">
+        <h1 className="text-xl font-bold">
           LeadFlow CRM
         </h1>
       </div>
