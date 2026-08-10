@@ -1,5 +1,4 @@
-import { Button } from "@/components/ui/button";
-
+import AddLeadDialog from "./AddLeadDialog";
 export default function LeadHeader() {
   return (
     <div className="flex items-center justify-between">
@@ -9,8 +8,7 @@ export default function LeadHeader() {
           Manage all your leads in one place.
         </p>
       </div>
-
-      <Button>Add Lead</Button>
+      <AddLeadDialog />
     </div>
   );
 }
