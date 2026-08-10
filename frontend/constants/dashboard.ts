@@ -1,22 +1,29 @@
+import {
+  Users,
+  UserPlus,
+  CalendarClock,
+  BadgeCheck,
+} from "lucide-react";
+
 export const dashboardStats = [
   {
     title: "Total Leads",
     value: "1,250",
-    color: "blue",
+    icon: Users,
   },
   {
     title: "Today's Leads",
     value: "45",
-    color: "green",
+    icon: UserPlus,
   },
   {
     title: "Follow-ups",
     value: "23",
-    color: "yellow",
+    icon: CalendarClock,
   },
   {
     title: "Converted",
     value: "18",
-    color: "purple",
+    icon: BadgeCheck,
   },
 ];
