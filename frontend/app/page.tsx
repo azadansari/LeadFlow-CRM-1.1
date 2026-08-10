@@ -1,9 +1,11 @@
+import DashboardLayout from "@/components/layout/DashboardLayout";
+
 export default function Home() {
   return (
-    <main className="flex min-h-screen items-center justify-center">
-      <h1 className="text-4xl font-bold">
-        LeadFlow CRM
+    <DashboardLayout>
+      <h1 className="text-3xl font-bold">
+        Welcome to LeadFlow CRM
       </h1>
-    </main>
+    </DashboardLayout>
   );
 }

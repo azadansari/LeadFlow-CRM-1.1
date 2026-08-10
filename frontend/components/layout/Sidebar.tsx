@@ -1,0 +1,68 @@
+import Link from "next/link";
+import {
+  LayoutDashboard,
+  Users,
+  UserCircle,
+  CalendarCheck,
+  Settings,
+} from "lucide-react";
+
+const menuItems = [
+  {
+    title: "Dashboard",
+    href: "/dashboard",
+    icon: LayoutDashboard,
+  },
+  {
+    title: "Leads",
+    href: "/leads",
+    icon: Users,
+  },
+  {
+    title: "Users",
+    href: "/users",
+    icon: UserCircle,
+  },
+  {
+    title: "Follow-ups",
+    href: "/followups",
+    icon: CalendarCheck,
+  },
+  {
+    title: "Settings",
+    href: "/settings",
+    icon: Settings,
+  },
+];
+
+export default function Sidebar() {
+  return (
+    <aside className="w-64 border-r bg-white h-screen">
+      <div className="border-b p-6">
+        <h1 className="text-2xl font-bold">
+          LeadFlow CRM
+        </h1>
+      </div>
+
+      <nav className="p-4">
+        <ul className="space-y-2">
+          {menuItems.map((item) => {
+            const Icon = item.icon;
+
+            return (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  className="flex items-center gap-3 rounded-lg px-4 py-3 hover:bg-gray-100 transition"
+                >
+                  <Icon size={18} />
+                  <span>{item.title}</span>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+    </aside>
+  );
+}
