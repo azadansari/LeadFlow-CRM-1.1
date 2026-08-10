@@ -1,24 +1,40 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { recentLeads } from "@/constants/leads";
+import { useQuery } from "@tanstack/react-query";
+import { LeadService } from "@/services/lead.service";
 
 export function useLeads() {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
 
+  const {
+    data: leads = [],
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["leads"],
+    queryFn: LeadService.getAll,
+  });
+
   const filteredLeads = useMemo(() => {
-    return recentLeads.filter((lead) => {
+    return leads.filter((lead) => {
+      const searchValue = search.toLowerCase().trim();
+
       const matchesSearch =
-        lead.name.toLowerCase().includes(search.toLowerCase()) ||
-        lead.phone.includes(search);
+        !searchValue ||
+        lead.name.toLowerCase().includes(searchValue) ||
+        lead.phone.includes(searchValue) ||
+        lead.email?.toLowerCase().includes(searchValue);
 
       const matchesStatus =
         status === "all" || lead.status === status;
 
       return matchesSearch && matchesStatus;
     });
-  }, [search, status]);
+  }, [leads, search, status]);
 
   return {
     leads: filteredLeads,
@@ -26,5 +42,9 @@ export function useLeads() {
     setSearch,
     status,
     setStatus,
+    isLoading,
+    isError,
+    error,
+    refetch,
   };
 }

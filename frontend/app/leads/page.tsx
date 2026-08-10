@@ -14,19 +14,54 @@ export default function LeadsPage() {
     setSearch,
     status,
     setStatus,
+    isLoading,
+    isError,
+    refetch,
   } = useLeads();
 
   return (
     <DashboardLayout>
       <div className="space-y-6 p-4">
         <LeadHeader />
+
         <LeadTopToolBar 
           search={search}
           onSearchChange={setSearch}
           status={status}
           onStatusChange={setStatus}
         />
-        <LeadTable leads={recentLeads} />
+        {isLoading && (
+          <div className="rounded-lg border p-8 text-center text-gray-500">
+            Loading leads...
+          </div>
+        )}
+
+        {isError && (
+          <div className="rounded-lg border p-8 text-center">
+            <p className="text-red-500">
+              Failed to load leads.
+            </p>
+
+            <button
+              onClick={() => refetch()}
+              className="mt-3 underline"
+            >
+              Try again
+            </button>
+          </div>
+        )}
+
+        {!isLoading && !isError && (
+          <>
+            {leads.length === 0 ? (
+              <div className="rounded-lg border p-8 text-center text-gray-500">
+                No leads found.
+              </div>
+            ) : (
+              <LeadTable leads={leads} />
+            )}
+          </>
+        )}
       </div>
     </DashboardLayout>
   );
