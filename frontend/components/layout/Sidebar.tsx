@@ -1,4 +1,7 @@
+<Logo />
 import Link from "next/link";
+import { navigation } from "@/constants/navigation";
+import Logo from "./Logo";
 import {
   LayoutDashboard,
   Users,
@@ -6,34 +9,6 @@ import {
   CalendarCheck,
   Settings,
 } from "lucide-react";
-
-const menuItems = [
-  {
-    title: "Dashboard",
-    href: "/dashboard",
-    icon: LayoutDashboard,
-  },
-  {
-    title: "Leads",
-    href: "/leads",
-    icon: Users,
-  },
-  {
-    title: "Users",
-    href: "/users",
-    icon: UserCircle,
-  },
-  {
-    title: "Follow-ups",
-    href: "/followups",
-    icon: CalendarCheck,
-  },
-  {
-    title: "Settings",
-    href: "/settings",
-    icon: Settings,
-  },
-];
 
 export default function Sidebar() {
   return (
@@ -46,9 +21,8 @@ export default function Sidebar() {
 
       <nav className="p-4">
         <ul className="space-y-2">
-          {menuItems.map((item) => {
+          {navigation.map((item) => {
             const Icon = item.icon;
-
             return (
               <li key={item.href}>
                 <Link

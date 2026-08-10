@@ -1,11 +1,5 @@
-import DashboardLayout from "@/components/layout/DashboardLayout";
+import { redirect } from "next/navigation";
 
 export default function Home() {
-  return (
-    <DashboardLayout>
-      <h1 className="text-3xl font-bold">
-        Welcome to LeadFlow CRM
-      </h1>
-    </DashboardLayout>
-  );
+  redirect("/dashboard");
 }
