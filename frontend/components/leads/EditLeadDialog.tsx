@@ -1,16 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useCreateLead } from "@/features/leads/hooks/useCreateLead";
+
+import { Lead } from "@/types/lead";
+import {
+  leadSchema,
+  LeadFormData,
+} from "@/features/leads/types";
+
+import { useUpdateLead } from "@/features/leads/hooks/useUpdateLead";
 
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 
 import { Button } from "@/components/ui/button";
@@ -24,34 +30,42 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import {
-  leadSchema,
-  LeadFormData,
-} from "@/features/leads/types";
+interface EditLeadDialogProps {
+  lead: Lead;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
 
-export default function AddLeadDialog() {
-  const [open, setOpen] = useState(false);
+export default function EditLeadDialog({
+  lead,
+  open,
+  onOpenChange,
+}: EditLeadDialogProps) {
+  const updateLead = useUpdateLead();
   const [serverError, setServerError] = useState("");
-  const createLead = useCreateLead();
 
   const {
     register,
     handleSubmit,
     setValue,
-    watch,
     reset,
+    watch,
     formState: { errors },
   } = useForm<LeadFormData>({
     resolver: zodResolver(leadSchema),
-
-    defaultValues: {
-      name: "",
-      phone: "",
-      email: "",
-      status: "New",
-      source: "Manual",
-    },
   });
+
+  useEffect(() => {
+    if (open) {
+      reset({
+        name: lead.name,
+        phone: lead.phone,
+        email: lead.email || "",
+        status: lead.status,
+        source: lead.source,
+      });
+    }
+  }, [open, lead, reset]);
 
   const status = watch("status");
   const source = watch("source");
@@ -59,14 +73,16 @@ export default function AddLeadDialog() {
   const onSubmit = async (data: LeadFormData) => {
     setServerError("");
     try {
-      await createLead.mutateAsync(data);
-      reset();
-      setOpen(false);
+      await updateLead.mutateAsync({
+        id: String(lead.id),
+        data,
+      });
+      onOpenChange(false);
     } catch (error: any) {
-      console.error("Failed to create lead:", error);
+      console.error("Failed to update lead:", error);
       const message =
         error?.response?.data?.message ||
-        "Failed to create lead. Please try again.";
+        "Failed to update lead. Please try again.";
       setServerError(
         Array.isArray(message) ? message.join(", ") : message
       );
@@ -74,24 +90,16 @@ export default function AddLeadDialog() {
   };
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={(value) => {
-        setOpen(value);
-
-        if (!value) {
-          setServerError("");
-        }
-      }}
+    <Dialog open={open} onOpenChange={(value) => {
+      onOpenChange(value);
+      if (!value) {
+        setServerError("");
+      }
+    }}
     >
-
-      {/* Add Lead Button */}
-      <DialogTrigger render={<Button>Add Lead</Button>} />
-
       <DialogContent className="sm:max-w-[500px]">
-
         <DialogHeader>
-          <DialogTitle>Add New Lead</DialogTitle>
+          <DialogTitle>Edit Lead</DialogTitle>
         </DialogHeader>
 
         <form
@@ -105,15 +113,13 @@ export default function AddLeadDialog() {
           )}
 
           {/* Name */}
+          ...
           <div>
             <label className="mb-2 block text-sm font-medium">
               Name *
             </label>
 
-            <Input
-              placeholder="Enter lead name"
-              {...register("name")}
-            />
+            <Input {...register("name")} />
 
             {errors.name && (
               <p className="mt-1 text-sm text-red-500">
@@ -122,16 +128,12 @@ export default function AddLeadDialog() {
             )}
           </div>
 
-          {/* Phone */}
           <div>
             <label className="mb-2 block text-sm font-medium">
               Phone *
             </label>
 
-            <Input
-              placeholder="Enter phone number"
-              {...register("phone")}
-            />
+            <Input {...register("phone")} />
 
             {errors.phone && (
               <p className="mt-1 text-sm text-red-500">
@@ -140,7 +142,6 @@ export default function AddLeadDialog() {
             )}
           </div>
 
-          {/* Email */}
           <div>
             <label className="mb-2 block text-sm font-medium">
               Email
@@ -148,7 +149,6 @@ export default function AddLeadDialog() {
 
             <Input
               type="email"
-              placeholder="Enter email"
               {...register("email")}
             />
 
@@ -159,7 +159,6 @@ export default function AddLeadDialog() {
             )}
           </div>
 
-          {/* Status */}
           <div>
             <label className="mb-2 block text-sm font-medium">
               Status
@@ -167,44 +166,33 @@ export default function AddLeadDialog() {
 
             <Select
               value={status}
-              onValueChange={(value) => {
-                if (value) {
-                  setValue(
-                    "status",
-                    value as LeadFormData["status"]
-                  );
-                }
-              }}
+              onValueChange={(value) =>
+                setValue(
+                  "status",
+                  value as LeadFormData["status"]
+                )
+              }
             >
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
 
               <SelectContent>
-                <SelectItem value="New">
-                  New
-                </SelectItem>
-
+                <SelectItem value="New">New</SelectItem>
                 <SelectItem value="Contacted">
                   Contacted
                 </SelectItem>
-
                 <SelectItem value="Qualified">
                   Qualified
                 </SelectItem>
-
                 <SelectItem value="Converted">
                   Converted
                 </SelectItem>
-
-                <SelectItem value="Lost">
-                  Lost
-                </SelectItem>
+                <SelectItem value="Lost">Lost</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          {/* Source */}
           <div>
             <label className="mb-2 block text-sm font-medium">
               Source
@@ -212,14 +200,12 @@ export default function AddLeadDialog() {
 
             <Select
               value={source}
-              onValueChange={(value) => {
-                if (value) {
-                  setValue(
-                    "source",
-                    value as LeadFormData["source"]
-                  );
-                }
-              }}
+              onValueChange={(value) =>
+                setValue(
+                  "source",
+                  value as LeadFormData["source"]
+                )
+              }
             >
               <SelectTrigger>
                 <SelectValue />
@@ -253,21 +239,22 @@ export default function AddLeadDialog() {
             </Select>
           </div>
 
-          {/* Buttons */}
           <div className="flex justify-end gap-3">
-
             <Button
               type="button"
               variant="outline"
-              onClick={() => setOpen(false)}
-            >Cancel
+              onClick={() => onOpenChange(false)}
+            >
+              Cancel
             </Button>
 
             <Button
               type="submit"
-              disabled={createLead.isPending}
+              disabled={updateLead.isPending}
             >
-              {createLead.isPending ? "Creating..." : "Create Lead"}
+              {updateLead.isPending
+                ? "Updating..."
+                : "Update Lead"}
             </Button>
           </div>
         </form>

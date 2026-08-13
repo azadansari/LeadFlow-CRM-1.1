@@ -12,7 +12,7 @@ import {
 
 export default function Sidebar() {
   return (
-    <aside className="w-64 border-r bg-white h-screen">
+    <aside className="w-64 border-r bg-white h-screen sidebar-container">
       <div className="border-b p-6">
         <h1 className="text-xl font-bold">
           LeadFlow CRM

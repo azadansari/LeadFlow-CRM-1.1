@@ -1,30 +1,28 @@
 import { Lead } from "@/types/lead";
 import { LeadFormData } from "@/features/leads/types";
-import { recentLeads } from "@/constants/leads";
-
-let mockLeads: Lead[] = [...recentLeads];
+import { api } from "./api";
 
 export const LeadService = {
   async getAll(): Promise<Lead[]> {
-    return Promise.resolve(mockLeads);
+    const response = await api.get<Lead[]>("/leads");
+    return response.data;
   },
-
   async create(data: LeadFormData): Promise<Lead> {
-    const now = new Date().toISOString();
+    const response = await api.post<Lead>("/leads", data);
+    return response.data;
+  },
+  async update(
+    id: string,
+    data: LeadFormData
+  ): Promise<Lead> {
+    const response = await api.patch<Lead>(
+      `/leads/${id}`,
+      data
+    );
 
-    const newLead: Lead = {
-      id: Date.now().toString(),
-      name: data.name,
-      phone: data.phone,
-      email: data.email || "",
-      status: data.status,
-      source: data.source,
-      createdAt: now,
-      updatedAt: now,
-    };
-
-    mockLeads = [newLead, ...mockLeads];
-
-    return Promise.resolve(newLead);
+    return response.data;
+  },
+  async delete(id: string): Promise<void> {
+    await api.delete(`/leads/${id}`);
   },
 };

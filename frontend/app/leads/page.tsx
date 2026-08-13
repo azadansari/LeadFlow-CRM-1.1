@@ -3,7 +3,6 @@ import DashboardLayout from "@/components/layout/DashboardLayout";
 import LeadHeader from "@/components/leads/LeadHeader";
 import LeadTable from "@/components/leads/LeadTable";
 import LeadTopToolBar from "@/components/leads/LeadTopToolBar";
-import { recentLeads } from "@/constants/leads";
 import { useLeads } from "@/features/leads/hooks/useLeads";
 import { Import } from "lucide-react";
 
@@ -21,7 +20,7 @@ export default function LeadsPage() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6 p-4">
+      <div className="space-y-6 p-4 bgwhite-container">
         <LeadHeader />
 
         <LeadTopToolBar 
