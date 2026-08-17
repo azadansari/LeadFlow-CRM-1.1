@@ -3,10 +3,9 @@ import { LucideIcon } from "lucide-react";
 
 interface StatCardProps {
   title: string;
-  value: string;
-  icon: LucideIcon;
+  value: string | number;
+  icon: React.ElementType;
 }
-
 export default function StatCard({
   title,
   value,

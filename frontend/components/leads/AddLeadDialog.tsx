@@ -4,36 +4,15 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCreateLead } from "@/features/leads/hooks/useCreateLead";
-
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
-import {
-  leadSchema,
-  LeadFormData,
-} from "@/features/leads/types";
-
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select";
+import { leadSchema, LeadFormData,} from "@/features/leads/types";
 export default function AddLeadDialog() {
   const [open, setOpen] = useState(false);
   const [serverError, setServerError] = useState("");
   const createLead = useCreateLead();
-
   const {
     register,
     handleSubmit,
@@ -43,7 +22,6 @@ export default function AddLeadDialog() {
     formState: { errors },
   } = useForm<LeadFormData>({
     resolver: zodResolver(leadSchema),
-
     defaultValues: {
       name: "",
       phone: "",
@@ -52,10 +30,8 @@ export default function AddLeadDialog() {
       source: "Manual",
     },
   });
-
   const status = watch("status");
   const source = watch("source");
-
   const onSubmit = async (data: LeadFormData) => {
     setServerError("");
     try {
@@ -72,7 +48,6 @@ export default function AddLeadDialog() {
       );
     }
   };
-
   return (
     <Dialog
       open={open}
@@ -84,16 +59,12 @@ export default function AddLeadDialog() {
         }
       }}
     >
-
       {/* Add Lead Button */}
-      <DialogTrigger render={<Button>Add Lead</Button>} />
-
+      <DialogTrigger render={<Button className="default-btn">Add Lead</Button>} />
       <DialogContent className="sm:max-w-[500px]">
-
         <DialogHeader>
           <DialogTitle>Add New Lead</DialogTitle>
         </DialogHeader>
-
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="space-y-5"
@@ -103,68 +74,57 @@ export default function AddLeadDialog() {
               {serverError}
             </div>
           )}
-
           {/* Name */}
           <div>
             <label className="mb-2 block text-sm font-medium">
-              Name *
+              Name <span className="text-red-500">*</span>
             </label>
-
             <Input
               placeholder="Enter lead name"
               {...register("name")}
             />
-
             {errors.name && (
-              <p className="mt-1 text-sm text-red-500">
+              <p className="mt-1 text-sm text-red-500 txt-12">
                 {errors.name.message}
               </p>
             )}
           </div>
-
           {/* Phone */}
           <div>
             <label className="mb-2 block text-sm font-medium">
-              Phone *
+              Phone <span className="text-red-500">*</span>
             </label>
-
             <Input
               placeholder="Enter phone number"
               {...register("phone")}
             />
-
             {errors.phone && (
-              <p className="mt-1 text-sm text-red-500">
+              <p className="mt-1 text-sm text-red-500 txt-12">
                 {errors.phone.message}
               </p>
             )}
           </div>
-
           {/* Email */}
           <div>
             <label className="mb-2 block text-sm font-medium">
               Email
             </label>
-
             <Input
               type="email"
               placeholder="Enter email"
               {...register("email")}
             />
-
             {errors.email && (
               <p className="mt-1 text-sm text-red-500">
                 {errors.email.message}
               </p>
             )}
           </div>
-
           {/* Status */}
           <div>
             <label className="mb-2 block text-sm font-medium">
               Status
             </label>
-
             <Select
               value={status}
               onValueChange={(value) => {
@@ -179,37 +139,30 @@ export default function AddLeadDialog() {
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
-
               <SelectContent>
                 <SelectItem value="New">
                   New
                 </SelectItem>
-
                 <SelectItem value="Contacted">
                   Contacted
                 </SelectItem>
-
                 <SelectItem value="Qualified">
                   Qualified
                 </SelectItem>
-
                 <SelectItem value="Converted">
                   Converted
                 </SelectItem>
-
                 <SelectItem value="Lost">
                   Lost
                 </SelectItem>
               </SelectContent>
             </Select>
           </div>
-
           {/* Source */}
           <div>
             <label className="mb-2 block text-sm font-medium">
               Source
             </label>
-
             <Select
               value={source}
               onValueChange={(value) => {
@@ -224,46 +177,37 @@ export default function AddLeadDialog() {
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
-
               <SelectContent>
                 <SelectItem value="WhatsApp">
                   WhatsApp
                 </SelectItem>
-
                 <SelectItem value="Website">
                   Website
                 </SelectItem>
-
                 <SelectItem value="Facebook">
                   Facebook
                 </SelectItem>
-
                 <SelectItem value="Instagram">
                   Instagram
                 </SelectItem>
-
                 <SelectItem value="Referral">
                   Referral
                 </SelectItem>
-
                 <SelectItem value="Manual">
                   Manual
                 </SelectItem>
               </SelectContent>
             </Select>
           </div>
-
           {/* Buttons */}
           <div className="flex justify-end gap-3">
-
             <Button
               type="button"
               variant="outline"
               onClick={() => setOpen(false)}
             >Cancel
             </Button>
-
-            <Button
+            <Button className="default-btn"
               type="submit"
               disabled={createLead.isPending}
             >

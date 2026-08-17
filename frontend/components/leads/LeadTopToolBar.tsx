@@ -8,7 +8,6 @@ interface Props {
   status: string;
   onStatusChange: (value: string) => void;
 }
-
 export default function LeadTopToolBar({
   search,
   onSearchChange,
@@ -26,7 +25,6 @@ export default function LeadTopToolBar({
           onChange={(value) => onStatusChange(value ?? "all")}
         />
       </div>
-      {/* <Button>Add Lead</Button> */}
     </div>
   );
 }
