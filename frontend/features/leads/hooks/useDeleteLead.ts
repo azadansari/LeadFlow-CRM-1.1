@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
-
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { LeadService } from "@/services/lead.service";
 
 export function useDeleteLead() {
@@ -14,25 +10,32 @@ export function useDeleteLead() {
     mutationFn: (id: string) =>
       LeadService.delete(id),
 
-    onSuccess: () => {
-      // Refresh Leads list
+    onSuccess: (_, deletedLeadId) => {
+      // Leads list
       queryClient.invalidateQueries({
         queryKey: ["leads"],
       });
 
-      // Refresh Dashboard statistics
+      // Dashboard recent leads
+      queryClient.invalidateQueries({
+        queryKey: ["dashboard-recent-leads"],
+      });
+
+      // Dashboard stats
       queryClient.invalidateQueries({
         queryKey: ["lead-stats"],
       });
-
       // Refresh Lead Status Overview
       queryClient.invalidateQueries({
         queryKey: ["lead-status-overview"],
       });
 
-      // Refresh Dashboard recent leads
-      queryClient.invalidateQueries({
-        queryKey: ["dashboard-recent-leads"],
+      // Remove activity cache for deleted lead
+      queryClient.removeQueries({
+        queryKey: [
+          "lead-activities",
+          deletedLeadId,
+        ],
       });
     },
   });

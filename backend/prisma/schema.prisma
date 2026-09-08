@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Lead {
+  id        String   @id @default(cuid())
+  name      String
+  phone     String   @unique
+  email     String?
+  status    String
+  source    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  activities LeadActivity[]
+  followUps FollowUp[]
+}
+
+model LeadActivity {
+  id        String   @id @default(uuid())
+  leadId    String
+  type      String
+  title     String
+  description String?
+  createdAt DateTime @default(now())
+
+  lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@index([leadId])
+  @@index([createdAt])
+}
+model FollowUp {
+  id          String   @id @default(uuid())
+  leadId      String
+  type        String
+  dueAt       DateTime
+  note        String?
+  status      String   @default("Pending")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@index([leadId])
+  @@index([dueAt])
+  @@index([status])
+}

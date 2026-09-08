@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
-
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { LeadService } from "@/services/lead.service";
 import { LeadFormData } from "@/features/leads/types";
 
@@ -15,25 +11,32 @@ export function useCreateLead() {
     mutationFn: (data: LeadFormData) =>
       LeadService.create(data),
 
-    onSuccess: () => {
-      // Refresh Leads list
+    onSuccess: (createdLead) => {
+      // Leads list
       queryClient.invalidateQueries({
         queryKey: ["leads"],
       });
 
+      // Dashboard recent leads
+      queryClient.invalidateQueries({
+        queryKey: ["dashboard-recent-leads"],
+      });
       // Refresh Lead Status Overview
       queryClient.invalidateQueries({
         queryKey: ["lead-status-overview"],
       });
 
-      // Refresh Dashboard statistics
+      // Dashboard stats
       queryClient.invalidateQueries({
         queryKey: ["lead-stats"],
       });
 
-      // Refresh Dashboard recent leads
+      // New lead activity
       queryClient.invalidateQueries({
-        queryKey: ["dashboard-recent-leads"],
+        queryKey: [
+          "lead-activities",
+          createdLead.id,
+        ],
       });
     },
   });
